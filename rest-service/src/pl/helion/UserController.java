@@ -3,6 +3,7 @@ package pl.helion;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -57,5 +58,39 @@ public class UserController {
 		
 		return "email updated";
 	}
-
+	
+	@DELETE
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("delete/{id}")
+	public String deleteUser(@PathParam("id") int id) {
+		UserDAO.deleteUser(id);
+		return "user " + id + " deleted";
+	}
+	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("all/hibernate")
+	public List<User> getAllUsers(){
+		return UserDAO.getAllUsers();
+		
+	}
+	
+	@POST
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("add/hibernate")
+	public String addUserHibernate(@FormParam ("name") String name, @FormParam ("password") String password, @FormParam ("email") String email) {
+		UserDAO.addUserHibernate(name, password, email);
+		return "new User added to database";
+	}
+	
+	@PUT
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("update/hibernate/{id}")
+	public String updateUserEmailHibernate(@PathParam("id") int id, @FormParam("email") String email) {
+		UserDAO.updateUserEmailHibernate(id, email);
+		
+		return "email updated";
+	}
 }
