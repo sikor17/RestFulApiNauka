@@ -93,4 +93,21 @@ public class UserController {
 		
 		return "email updated";
 	}
+	
+	@DELETE
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("delete/hibernate/{id}")
+	public String deleteUserHibernate(@PathParam("id") int id) {
+		UserDAO.deleteUserHibernate(id);
+		return "user " + id + " deleted";
+	}
+	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("user/hibernate/{id}")
+	public List<User> getUser(@PathParam("id") int id){
+		return UserDAO.getUser(id);
+		
+	}
+	
 }

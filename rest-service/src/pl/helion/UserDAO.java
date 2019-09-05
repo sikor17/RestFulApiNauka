@@ -35,7 +35,8 @@ public class UserDAO {
 	@SuppressWarnings("deprecation")
 	public static List<User> getAllUsers() {
 
-		SessionFactory sessionFactory = new Configuration().configure("hibernate.cfg.xml").addAnnotatedClass(User.class).buildSessionFactory();
+		SessionFactory sessionFactory = new Configuration().configure("hibernate.cfg.xml").addAnnotatedClass(User.class)
+				.buildSessionFactory();
 		Session session = sessionFactory.getCurrentSession();
 		session.beginTransaction();
 		try {
@@ -55,7 +56,8 @@ public class UserDAO {
 	@SuppressWarnings("deprecation")
 	public static void addUserHibernate(String name, String password, String email) {
 
-		SessionFactory sessionFactory = new Configuration().configure("hibernate.cfg.xml").addAnnotatedClass(User.class).buildSessionFactory();
+		SessionFactory sessionFactory = new Configuration().configure("hibernate.cfg.xml").addAnnotatedClass(User.class)
+				.buildSessionFactory();
 		Session session = sessionFactory.getCurrentSession();
 		session.beginTransaction();
 		try {
@@ -75,9 +77,10 @@ public class UserDAO {
 	}
 
 	public static void updateUserEmailHibernate(int id, String email) {
-		SessionFactory sessionFactory = new Configuration().configure("hibernate.cfg.xml").addAnnotatedClass(User.class).buildSessionFactory();
-		Session session = sessionFactory.getCurrentSession();
-		session.beginTransaction();
+		SessionFactory sessionFactory = new Configuration().configure("hibernate.cfg.xml").addAnnotatedClass(User.class)
+				.buildSessionFactory();
+		Session session = sessionFactory.openSession();
+
 		try {
 			User user = new User();
 			user = (User) session.get(User.class, id);
@@ -92,5 +95,53 @@ public class UserDAO {
 			sessionFactory.close();
 		}
 
+	}
+
+	public static void deleteUserHibernate(int id) {
+		SessionFactory sessionFactory = new Configuration().configure("hibernate.cfg.xml").addAnnotatedClass(User.class)
+				.buildSessionFactory();
+		Session session = sessionFactory.openSession();
+
+		try {
+			User user = new User();
+			user = (User) session.get(User.class, id);
+
+			session.delete(user);
+			session.beginTransaction();
+			session.getTransaction().commit();
+		} catch (Exception ex) {
+
+		} finally {
+			session.close();
+			sessionFactory.close();
+		}
+
+	}
+
+	public static List<User> getUser(int id) {
+		SessionFactory sessionFactory = new Configuration().configure("hibernate.cfg.xml").addAnnotatedClass(User.class)
+				.buildSessionFactory();
+		Session session = sessionFactory.openSession();
+		List<User> result = new ArrayList<User>();
+		User user = new User();
+
+		try {
+
+			user = (User) session.get(User.class, id);
+			result.add(user);
+
+			session.beginTransaction();
+			session.getTransaction().commit();
+		} catch (Exception ex) {
+
+		} finally {
+			session.close();
+			sessionFactory.close();
+		}
+System.out.println(user);
+		if (user == null) {
+			throw new DataNotFoundException("User with id: " + id + " not exist");
+		}
+		return result;
 	}
 }
